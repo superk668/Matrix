@@ -1,4 +1,5 @@
 import random
+import decimal
 
 class Matrix:
     def __init__(self, data=None, dim=None, init_value=0):
@@ -15,7 +16,6 @@ class Matrix:
             self.data = [[init_value for c in range(dim[1])] for r in range(dim[0])]
         else:
             print("你没有提供任何数据！")
-            del self
     
     
     def shape(self):
@@ -188,12 +188,12 @@ class Matrix:
     def __len__(self):
         return self.dim[0] * self.dim[1]
     
-    def __str__(self):
+    def __str__(self):  # 未解决"-0.0"的问题
         display = "["
         for r in range(self.dim[0]):
             if r > 0:
                 display += ' '
-            display += '[' + ' '.join(f"{x:4}" for x in self.data[r]) + ']'
+            display += '[' + ' '.join(f"{round(x, 6):4}" for x in self.data[r]) + ']'
             if r < self.dim[0] - 1:
                 display += "\n"
         display += "]"
@@ -213,16 +213,13 @@ class Matrix:
             ans = 1
             for i in range(self.dim[0]):
                 ans *= ans_mat.data[i][i]
-            ans = round(ans, 6)
             return ans
 
-    "unfinished"
     def inverse(self):
         if not self.det():
             print("该矩阵为奇异阵，没有逆矩阵")
             return Matrix(dim=(1,1))
         else:
-            print(self)
             dime = self.dim[0]
             joint_mat = Matrix(dim=(dime , dime* 2))
             joint_mat[:, :dime] = self
@@ -232,17 +229,30 @@ class Matrix:
                 for j in range(i + 1, dime):
                     factor = joint_mat[j, i] / joint_mat[i, i]
                     f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
-                    print(joint_mat[i, i:])
                     joint_mat[j, i:] -= f_mat * joint_mat[i, i:]
-                    print(joint_mat)
-            #for i in range(dime, 0, -1):
-                #for j in range(i - 1, dime):
-                    
-                    #factor = joint_mat[]
-
-            inv_mat = joint_mat[:,dime + 1 :]
+            for i in range(dime - 1, 0, -1):
+                for j in range(i):
+                    factor = joint_mat[j, i] / joint_mat[i, i]
+                    f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
+                    joint_mat[j, i:] -= f_mat * joint_mat[i, i:]
+                unify_factor = 1 / joint_mat[i, i]
+                u_mat = Matrix(dim=joint_mat[i, :].dim, init_value=unify_factor)
+                joint_mat[i, :] *= u_mat
+            inv_mat = joint_mat[:,dime :]
             return inv_mat
-
+        
+    def rank(self):
+        ans_mat = self.copy()
+        for i in range(self.dim[0] - 1):
+            for j in range(i + 1, self.dim[0]):
+                factor = ans_mat[j, i] / ans_mat[i, i]
+                f_mat = Matrix(dim = ans_mat[i, i:].dim, init_value = factor)
+                ans_mat[j, i:] -= f_mat * ans_mat[i, i:]
+        r = 0
+        for i in range(self.dim[0]):
+            if ans_mat.data[i][self.dim[1] - 1]:
+                r += 1
+        return r
 
 
 def I(n):
@@ -251,15 +261,35 @@ def I(n):
         ans_lst[i][i] = 1
     return Matrix(ans_lst)
 
+def narray(dim, init_value=1): # dim (,,,,,), init为矩阵元素初始值
+    return Matrix(dim=dim, init_value=1)
+
+def arange(start, end, step):
+    mat_lst = list(range(start, end, step))
+    return Matrix([mat_lst])
+    
+def zeros(dim):
+    return Matrix(dim=dim)
+
+def zeros_like(matrix):
+    return Matrix(dim=matrix.dim)
+
+def ones(dim):
+    return Matrix(dim=dim, init_value=1)
+
+def ones_like(matrix):
+    return Matrix(dim=matrix.dim, init_value=1)
+
 
 
 
 
 mat1 = Matrix([[1,2,3],[1,3,5],[0,-3,1]])
-print(mat1)
 
-print(mat1.det())
-print(mat1)
+'''print(mat1)
+print(mat1.rank())
+print(mat1.inverse())
+print(mat1.dot(mat1.inverse()))'''
 
 '''print(I(4))
 mat1 = Matrix([[1,2], [3, 4]])
