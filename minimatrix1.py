@@ -1,5 +1,4 @@
 import random
-import decimal
 
 class Matrix:
     def __init__(self, data=None, dim=None, init_value=0):
@@ -280,11 +279,87 @@ def ones(dim):
 def ones_like(matrix):
     return Matrix(dim=matrix.dim, init_value=1)
 
+# unfinished
+def nrandom(dim):
+    pass
+
+#unfinished
+def nrandom_like(matrix):
+    pass
+
+def concatenate(items, axis=0):
+    try:
+        if not items:
+            raise ValueError("缺少拼接对象")
+        for m in items:
+            if type(m) != Matrix:
+                raise ValueError("拼接对象不是矩阵")
+        if axis != 0 and axis != 1:
+            raise ValueError("无法在此维度上拼接")
+        if axis == 0:
+            col = items[0].dim[1]
+            for m in items:
+                if m.dim[1] != col:
+                    raise ValueError("矩阵形状不匹配")
+            # 行数增加
+            row_num = items[0].dim[0]
+            ans_mat = zeros((len(items) * row_num, items[0].dim[1]))
+            for i in range(len(items)):
+                ans_mat[i * row_num : (i + 1) * row_num, :] = items[i]
+            return ans_mat
+        
+        if axis == 1:
+            row = items[0].dim[0]
+            for c in items:
+                if c.dim[0] != row:
+                    raise ValueError("矩阵形状不匹配")
+            # 列数增加
+            col_num = items[0].dim[1]
+            ans_mat = zeros((items[0].dim[0], len(items) * col_num))
+            for i in range(len(items)):
+                ans_mat[ : , i * col_num : (i + 1) * col_num] = items[i]
+            return ans_mat
+            
+    except Exception as e:
+        print(e)
+        return Matrix([[0]])
+
+def vectorize(func):
+    def v_func(mat):
+        if isinstance(mat, Matrix):
+            ans_mat = mat.copy()
+            for r in range(ans_mat.dim[0]):
+                for c in range(ans_mat.dim[1]):
+                    ans_mat.data[r][c] = func(mat.data[r][c])
+            return ans_mat
+        else:
+            return func(mat)
+    return v_func
 
 
 
 
-mat1 = Matrix([[1,2,3],[1,3,5],[0,-3,1]])
+'''@vectorize
+def func(x):
+    return x ** 2
+x = Matrix([[1, 2, 3],[2, 3, 1]])
+
+print(func(x))'''
+
+'''@vectorize
+def my_abs(x):
+    if x < 0:
+        return -x
+    else:
+        return x
+y = Matrix([[-1, 1], [2, -2]])
+print(my_abs(y))'''
+
+
+
+'''mat1 = Matrix([[1,2,3],[1,3,5],[0,-3,1]])
+mat2 = Matrix([[1,2], [4,5], [0,9]])
+print(concatenate((mat1, mat1), 1))'''
 
 '''print(mat1)
 print(mat1.rank())
