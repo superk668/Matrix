@@ -348,5 +348,101 @@ def vectorize(func):
 
 if __name__ == "__main__":
     print("test here")
-    m1 = Matrix([[random.randint(0, 100) for i in range(5)] for _ in range(5) ])
+    
+    # Create a random 5x5 matrix
+    m1 = Matrix([[random.randint(0, 100) for i in range(5)] for _ in range(5)])
+    print("Matrix m1:")
+    print(m1)
+    
+    # Test matrix multiplication with its inverse
+    print("\nMatrix m1 * m1.inverse():")
     print(m1.dot(m1.inverse()))
+    
+    # Test matrix reshaping
+    m2 = m1.reshape((1, 25))
+    print("\nReshaped matrix m2:")
+    print(m2)
+    
+    # Test matrix transpose
+    m3 = m1.T()
+    print("\nTransposed matrix m3:")
+    print(m3)
+    
+    # Test matrix sum along axis
+    print("\nMatrix m1 sum along axis 0:")
+    print(m1.sum(axis=0))
+    print("\nMatrix m1 sum along axis 1:")
+    print(m1.sum(axis=1))
+    print("\nTotal sum of matrix m1:")
+    print(m1.sum())
+    
+    # Test matrix Kronecker product
+    m4 = Matrix([[1, 2], [3, 4]])
+    print("\nMatrix m1 Kronecker product with m4:")
+    print(m1.Kronecker_product(m4))
+    
+    # Test matrix power
+    m5 = m1**2
+    print("\nMatrix m1 squared:")
+    print(m5)
+    
+    # Test matrix addition and subtraction
+    m6 = m1 + m1
+    print("\nMatrix m1 + m1:")
+    print(m6)
+    
+    m7 = m1 - m1
+    print("\nMatrix m1 - m1:")
+    print(m7)
+    
+    # Test matrix multiplication element-wise
+    m8 = m1 * m1
+    print("\nMatrix m1 * m1 element-wise:")
+    print(m8)
+    
+    # Test matrix determinant
+    print("\nDeterminant of m1:")
+    print(m1.det())
+    
+    # Test matrix inverse
+    m9 = m1.inverse()
+    print("\nInverse of m1:")
+    print(m9)
+    
+    # Test matrix rank
+    print("\nRank of m1:")
+    print(m1.rank())
+    
+    # Test identity matrix creation
+    identity_matrix = I(3)
+    print("\nIdentity matrix:")
+    print(identity_matrix)
+    
+    # Test creating a matrix with specified dimensions and initial value
+    m10 = narray((2, 3), init_value=5)
+    print("\nMatrix m10 with dimensions (2, 3) and initial value 5:")
+    print(m10)
+    
+    # Test creating a matrix with random values
+    m11 = nrandom((2, 2))
+    print("\nRandom matrix m11:")
+    print(m11)
+    
+    # Test vectorized function
+    @vectorize
+    def square(x):
+        return x**2
+    
+    m12 = square(m1)
+    print("\nMatrix m1 after squaring each element:")
+    print(m12)
+    
+    # Test concatenation along axis
+    m13 = concatenate([m1, m2], axis=0)
+    print("\nConcatenated matrix along axis 0:")
+    print(m13)
+    
+    m14 = concatenate([m1, m3], axis=1)
+    print("\nConcatenated matrix along axis 1:")
+    print(m14)
+
