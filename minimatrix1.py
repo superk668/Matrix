@@ -20,10 +20,18 @@ class Matrix:
     def shape(self):
         return self.dim
     
-    "unfinished"
     def reshape(self, newdim):
-        pass
-    
+        if self.dim[0] * self.dim[1] == newdim[0] * newdim[1]:
+            data_lst = [0] * (self.dim[0] * self.dim[1])
+            for r in range(self.dim[0]):
+                for c in range(self.dim[1]):
+                    data_lst[r * self.dim[1] + c] = self.data[r][c]
+            ans_lst = [data_lst[r * newdim[1] : (r + 1) * newdim[1]] for r in range(newdim[0])]
+            return Matrix(ans_lst)
+        else:
+            print("维数错误")
+            return Matrix([[0]])
+
     def dot(self, other):
         if self.dim[1] != other.dim[0]:
             print("These 2 matrices has no point product.")
@@ -206,9 +214,10 @@ class Matrix:
             ans_mat = self.copy()
             for i in range(self.dim[0] - 1):
                 for j in range(i + 1, self.dim[0]):
-                    factor = ans_mat[j, i] / ans_mat[i, i]
-                    f_mat = Matrix(dim = ans_mat[i, i:].dim, init_value = factor)
-                    ans_mat[j, i:] -= f_mat * ans_mat[i, i:]
+                    if ans_mat[i, i]:
+                        factor = ans_mat[j, i] / ans_mat[i, i]
+                        f_mat = Matrix(dim = ans_mat[i, i:].dim, init_value = factor)
+                        ans_mat[j, i:] -= f_mat * ans_mat[i, i:]
             ans = 1
             for i in range(self.dim[0]):
                 ans *= ans_mat.data[i][i]
@@ -229,7 +238,7 @@ class Matrix:
                     factor = joint_mat[j, i] / joint_mat[i, i]
                     f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
                     joint_mat[j, i:] -= f_mat * joint_mat[i, i:]
-            for i in range(dime - 1, 0, -1):
+            for i in range(dime - 1, -1, -1):
                 for j in range(i):
                     factor = joint_mat[j, i] / joint_mat[i, i]
                     f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
@@ -244,9 +253,10 @@ class Matrix:
         ans_mat = self.copy()
         for i in range(self.dim[0] - 1):
             for j in range(i + 1, self.dim[0]):
-                factor = ans_mat[j, i] / ans_mat[i, i]
-                f_mat = Matrix(dim = ans_mat[i, i:].dim, init_value = factor)
-                ans_mat[j, i:] -= f_mat * ans_mat[i, i:]
+                if ans_mat[i, i]:
+                    factor = ans_mat[j, i] / ans_mat[i, i]
+                    f_mat = Matrix(dim = ans_mat[i, i:].dim, init_value = factor)
+                    ans_mat[j, i:] -= f_mat * ans_mat[i, i:]
         r = 0
         for i in range(self.dim[0]):
             if ans_mat.data[i][self.dim[1] - 1]:
@@ -261,9 +271,9 @@ def I(n):
     return Matrix(ans_lst)
 
 def narray(dim, init_value=1): # dim (,,,,,), init为矩阵元素初始值
-    return Matrix(dim=dim, init_value=1)
+    return Matrix(dim=dim, init_value=init_value)
 
-def arange(start, end, step):
+def arange(start, end, step=1):
     mat_lst = list(range(start, end, step))
     return Matrix([mat_lst])
     
@@ -279,13 +289,13 @@ def ones(dim):
 def ones_like(matrix):
     return Matrix(dim=matrix.dim, init_value=1)
 
-# unfinished
 def nrandom(dim):
-    pass
+    lst = [[random.uniform(0, 1) for c in range(dim[1])] for r in range(dim[0])]
+    return Matrix(lst)
 
-#unfinished
 def nrandom_like(matrix):
-    pass
+    lst = [[random.uniform(0, 1) for c in range(matrix.dim[1])] for r in range(matrix.dim[0])]
+    return Matrix(lst)
 
 def concatenate(items, axis=0):
     try:
@@ -336,58 +346,7 @@ def vectorize(func):
             return func(mat)
     return v_func
 
-
-
-
-'''@vectorize
-def func(x):
-    return x ** 2
-x = Matrix([[1, 2, 3],[2, 3, 1]])
-
-print(func(x))'''
-
-'''@vectorize
-def my_abs(x):
-    if x < 0:
-        return -x
-    else:
-        return x
-y = Matrix([[-1, 1], [2, -2]])
-print(my_abs(y))'''
-
-
-
-'''mat1 = Matrix([[1,2,3],[1,3,5],[0,-3,1]])
-mat2 = Matrix([[1,2], [4,5], [0,9]])
-print(concatenate((mat1, mat1), 1))'''
-
-'''print(mat1)
-print(mat1.rank())
-print(mat1.inverse())
-print(mat1.dot(mat1.inverse()))'''
-
-'''print(I(4))
-mat1 = Matrix([[1,2], [3, 4]])
-print(mat1 ** 0)'''
-
-'''mat1 = Matrix([[1,2], [3, 4]])
-mat2 = Matrix([[5,6,7],[8,9,10]])
-print(mat1.Kronecker_product(mat2))
-print(mat2.Kronecker_product(mat1))'''
-
-'''mat1 = Matrix([[1,2], [4,5], [0,9]])
-print(mat1.sum(1))'''
-
-'''mat1 = Matrix([[1,2], [4,5], [0,9]])
-print(mat1)
-print(mat1.T())'''
-
-'''mat1 = Matrix([[1,2,3],[1,3,5],[0,-3,1]])
-mat1[:, :] = Matrix(dim=(3, 3))
-print(mat1)'''
-
-"""mat1 = Matrix([[1,2,3],[1,3,5],[0,-3,1]])
-mat2 = Matrix([[-2, 1, 3], [-4, 0, 9], [2, 1, 5]])
-print(mat1.dot(mat2))
-"""
-
+if __name__ == "__main__":
+    print("test here")
+    m1 = Matrix([[random.randint(0, 100) for i in range(5)] for _ in range(5) ])
+    print(m1.dot(m1.inverse()))
