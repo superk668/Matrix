@@ -237,7 +237,7 @@ class Matrix:
                     factor = joint_mat[j, i] / joint_mat[i, i]
                     f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
                     joint_mat[j, i:] -= f_mat * joint_mat[i, i:]
-            for i in range(dime - 1, 0, -1):
+            for i in range(dime - 1, -1, -1):
                 for j in range(i):
                     factor = joint_mat[j, i] / joint_mat[i, i]
                     f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
