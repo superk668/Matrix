@@ -196,11 +196,24 @@ class Matrix:
         return self.dim[0] * self.dim[1]
     
     def __str__(self):  # 未解决"-0.0"的问题
+        wid = 1
+        add_wid = 2
+        for r in self.data:
+            for c in r:
+                w_x = len(str(c))
+                if isinstance(c, int) and w_x > wid:
+                    wid = w_x
+                elif w_x > 5 and wid <= 5:
+                    add_wid = 4
+                    wid = 5
+                elif w_x > wid:
+                    add_wid = 4
+                    wid = w_x
         display = "["
         for r in range(self.dim[0]):
             if r > 0:
                 display += ' '
-            display += '[' + ' '.join(f"{round(x, 6):4}" for x in self.data[r]) + ']'
+            display += '[' + ' '.join("{:>{width}}".format(round(x, 5), width=wid + add_wid) for x in self.data[r]) + ']'
             if r < self.dim[0] - 1:
                 display += "\n"
         display += "]"
@@ -438,7 +451,7 @@ if __name__ == "__main__":
     print(m12)
     
     # Test concatenation along axis
-    m13 = concatenate([m1, m2], axis=0)
+    m13 = concatenate((m1, m2), axis=0)
     print("\nConcatenated matrix along axis 0:")
     print(m13)
     
