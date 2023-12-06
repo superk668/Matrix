@@ -234,6 +234,7 @@ class Matrix:
 
             for i in range(self.dim[0]):
                 ans *= ans_mat.data[i][i]
+            if int(ans) == 
             return ans
 
     def inverse(self):

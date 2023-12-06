@@ -7,6 +7,16 @@ import minimatrix1 as mm
 # The following code is only for your reference
 # Please write the test code yourself
 
+mat_a = mm.Matrix([[0,3],[2,0]])
+print(mat_a.det())
+
+
+
+
+
+
+
+
 '''mat = mm.Matrix([[1,2,3],[6,5,4],[7,8,9]])
 print(mat)
 print(mat.data)
@@ -29,38 +39,29 @@ print(m2)
 print(mm.nrandom_like(m24))
 '''
 
-m = 1000
+"""m = 1000
 n = 100
 X = mm.nrandom((m, n))
 w = mm.nrandom((n, 1))
 e = mm.nrandom((m, 1))
 
 
-
-
 mean = e.sum()[0, 0] / m
 e -= mm.narray((m, 1), mean)
-
 Y = X.dot(w) + e
-
-
-
-
-
-
-w_ = X.T().dot(X).inverse().dot(X.T()).dot(Y)
+w_ = X.T().dot(X).inverse().dot(X.T()).dot(Y)"""
 
 
 '''print()
 print(w.sum())
 print(w_.sum())'''
 
-@mm.vectorize
+"""@mm.vectorize
 def square(x):
     return x ** 2
 
 mse = square(w - w_).sum()[0, 0] / n
-print(mse)
+print(mse)"""
 
 
 '''@vectorize
