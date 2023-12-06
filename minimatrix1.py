@@ -184,10 +184,12 @@ class Matrix:
     def __str__(self):  # 未解决"-0.0"的问题
         wid = 1
         add_wid = 2
-        for r in self.data:
-            for c in r:
-                w_x = len(str(c))
-                if isinstance(c, int) and w_x > wid:
+        for r in range(self.dim[0]):
+            for c in range(self.dim[1]):
+                if self.data[r][c] == int(self.data[r][c]):
+                    self.data[r][c] = int(self.data[r][c])
+                w_x = len(str(self.data[r][c]))
+                if isinstance(self.data[r][c], int) and w_x > wid:
                     wid = w_x
                 elif w_x > 5 and wid <= 5:
                     add_wid = 4
@@ -234,7 +236,6 @@ class Matrix:
 
             for i in range(self.dim[0]):
                 ans *= ans_mat.data[i][i]
-            if int(ans) == 
             return ans
 
     def inverse(self):

@@ -7,8 +7,8 @@ import minimatrix1 as mm
 # The following code is only for your reference
 # Please write the test code yourself
 
-mat_a = mm.Matrix([[0,3],[2,0]])
-print(mat_a.det())
+mat_a = mm.Matrix([[0,3.0],[2.0,0]])
+print(mat_a)
 
 
 
@@ -82,36 +82,3 @@ print(my_abs(y))'''
 
 
 
-'''mat1 = Matrix([[1,2,3],[1,3,5],[0,-3,1]])
-mat2 = Matrix([[1,2], [4,5], [0,9]])
-print(concatenate((mat1, mat1), 1))'''
-
-'''print(mat1)
-print(mat1.rank())
-print(mat1.inverse())
-print(mat1.dot(mat1.inverse()))'''
-
-'''print(I(4))
-mat1 = Matrix([[1,2], [3, 4]])
-print(mat1 ** 0)'''
-
-'''mat1 = Matrix([[1,2], [3, 4]])
-mat2 = Matrix([[5,6,7],[8,9,10]])
-print(mat1.Kronecker_product(mat2))
-print(mat2.Kronecker_product(mat1))'''
-
-'''mat1 = Matrix([[1,2], [4,5], [0,9]])
-print(mat1.sum(1))'''
-
-'''mat1 = Matrix([[1,2], [4,5], [0,9]])
-print(mat1)
-print(mat1.T())'''
-
-'''mat1 = Matrix([[1,2,3],[1,3,5],[0,-3,1]])
-mat1[:, :] = Matrix(dim=(3, 3))
-print(mat1)'''
-
-"""mat1 = Matrix([[1,2,3],[1,3,5],[0,-3,1]])
-mat2 = Matrix([[-2, 1, 3], [-4, 0, 9], [2, 1, 5]])
-print(mat1.dot(mat2))
-"""
