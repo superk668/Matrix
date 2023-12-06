@@ -211,7 +211,6 @@ class Matrix:
         if self.dim[0] != self.dim[1]:
             print("三行四列的行列式我没有见过啊！")
             return 0
-
         else:          
             ans = 1            
             ans_mat = self.copy()
@@ -228,7 +227,7 @@ class Matrix:
                             ans *= -1
                             break
                     if not flag:
-                        return 0   
+                        return 0
                 for j in range(i + 1, self.dim[0]):    
                     factor = ans_mat[j, i] / ans_mat[i, i]
                     f_mat = Matrix(dim = ans_mat[i, i:].dim, init_value = factor)
@@ -237,34 +236,43 @@ class Matrix:
             for i in range(self.dim[0]):
                 ans *= ans_mat.data[i][i]
             if int(ans) == ans:
-                return int(ans)    
+                return int(ans)
             return ans
 
     def inverse(self):
-        if not self.det():
-            print("该矩阵为奇异阵，没有逆矩阵")
-            return Matrix(dim=(1,1))
-        else:
-            dime = self.dim[0]
-            joint_mat = Matrix(dim=(dime , dime* 2))
-            joint_mat[:, :dime] = self
-            joint_mat[:, dime :] = I(dime)
-            # 高斯消元法
-            for i in range(dime - 1):
-                for j in range(i + 1, dime):
-                    factor = joint_mat[j, i] / joint_mat[i, i]
-                    f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
-                    joint_mat[j, i:] -= f_mat * joint_mat[i, i:]
-            for i in range(dime - 1, -1, -1):
-                for j in range(i):
-                    factor = joint_mat[j, i] / joint_mat[i, i]
-                    f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
-                    joint_mat[j, i:] -= f_mat * joint_mat[i, i:]
-                unify_factor = 1 / joint_mat[i, i]
-                u_mat = Matrix(dim=joint_mat[i, :].dim, init_value=unify_factor)
-                joint_mat[i, :] *= u_mat
-            inv_mat = joint_mat[:,dime :]
-            return inv_mat
+        dime = self.dim[0]
+        joint_mat = Matrix(dim=(dime , dime* 2))
+        joint_mat[:, :dime] = self
+        joint_mat[:, dime: ] = I(dime)
+        # 高斯消元法
+        for i in range(self.dim[0] - 1):
+            if not joint_mat[i, i]:
+                flag = False
+                for k in range(i+1,self.dim[0]):
+                    if joint_mat[k,i]:
+                        #交换两行
+                        memory = joint_mat[i,:]
+                        joint_mat[i,:] = joint_mat[k,:]
+                        joint_mat[k,:] = memory
+                        flag = True
+                        break
+                if not flag:
+                    print("该矩阵为奇异阵，没有逆矩阵")
+                    return Matrix([[0]])
+            for j in range(i + 1, dime):
+                factor = joint_mat[j, i] / joint_mat[i, i]
+                f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
+                joint_mat[j, i:] -= f_mat * joint_mat[i, i:]
+        for i in range(dime - 1, -1, -1):
+            for j in range(i):
+                factor = joint_mat[j, i] / joint_mat[i, i]
+                f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
+                joint_mat[j, i:] -= f_mat * joint_mat[i, i:]
+            unify_factor = 1 / joint_mat[i, i]
+            u_mat = Matrix(dim=joint_mat[i, :].dim, init_value=unify_factor)
+            joint_mat[i, :] *= u_mat
+        inv_mat = joint_mat[:,dime :]
+        return inv_mat
         
     def rank(self):
         ans_mat = self.copy()
