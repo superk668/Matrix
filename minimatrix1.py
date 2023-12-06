@@ -37,8 +37,6 @@ class Matrix:
             print("These 2 matrices has no point product.")
             return Matrix([[0]])
         lst_mat = [[0 for c in range(other.dim[1])] for r in range(self.dim[0])]
-        # ans_mat = Matrix(dim=(self.dim[0], other.dim[1]))
-        # ans_mat[i][j]
         for r in range(self.dim[0]):
             for c in range(other.dim[1]):
                 for i in range(self.dim[1]):
@@ -55,23 +53,11 @@ class Matrix:
 
     def sum(self, axis=None):
         if axis == 0:
-            ans_lst = [0 for _ in range(self.dim[1])]
-            for c in range(self.dim[1]):
-                for r in range(self.dim[0]):
-                    ans_lst[c] += self.data[r][c]
-            ans_mat = Matrix([ans_lst])
-            return ans_mat
-        elif axis == 1:
-            ans_lst = []
-            for r in range(self.dim[0]):
-                ans_lst.append([sum(self.data[r])])
-            ans_mat = Matrix(ans_lst)
-            return ans_mat
-        elif axis == None:
-            tot = 0
-            for r in range(self.dim[0]):
-                tot += sum(self.data[r])
-            return Matrix([[tot]])
+            return Matrix([[sum([self.data[i][j] for i in range(self.dim[0])]) for j in range(self.dim[1])]])
+        if axis == 1:
+            return Matrix([[sum([self.data[i][j] for j in range(self.dim[1])])] for i in range(self.dim[0])])
+        elif not axis:
+            return Matrix([[sum(self.data[i][j] for i in range(self.dim[0]) for j in range(self.dim[1]))]])
 
     def copy(self):
         lst = [[c for c in r] for r in self.data]
@@ -223,15 +209,29 @@ class Matrix:
         if self.dim[0] != self.dim[1]:
             print("三行四列的行列式我没有见过啊！")
             return 0
-        else:
+
+        else:          
+            ans = 1            
             ans_mat = self.copy()
             for i in range(self.dim[0] - 1):
-                for j in range(i + 1, self.dim[0]):
-                    if ans_mat[i, i]:
-                        factor = ans_mat[j, i] / ans_mat[i, i]
-                        f_mat = Matrix(dim = ans_mat[i, i:].dim, init_value = factor)
-                        ans_mat[j, i:] -= f_mat * ans_mat[i, i:]
-            ans = 1
+                if not ans_mat[i, i]:
+                    flag = False
+                    for k in range(i+1,self.dim[0]):
+                        if ans_mat[k,i]:
+                            #交换两行
+                            memory = ans_mat[i,:]
+                            ans_mat[i,:] = ans_mat[k,:]
+                            ans_mat[k,:] = memory
+                            flag = True
+                            ans *= -1
+                            break
+                    if not flag:
+                        return 0   
+                for j in range(i + 1, self.dim[0]):    
+                    factor = ans_mat[j, i] / ans_mat[i, i]
+                    f_mat = Matrix(dim = ans_mat[i, i:].dim, init_value = factor)
+                    ans_mat[j, i:] -= f_mat * ans_mat[i, i:]
+
             for i in range(self.dim[0]):
                 ans *= ans_mat.data[i][i]
             return ans
