@@ -181,27 +181,28 @@ class Matrix:
     def __len__(self):
         return self.dim[0] * self.dim[1]
     
-    def __str__(self):  # 未解决"-0.0"的问题
-        wid = 1
-        add_wid = 2
+    def __str__(self):
+        wid = 0
         for r in range(self.dim[0]):
             for c in range(self.dim[1]):
                 if self.data[r][c] == int(self.data[r][c]):
                     self.data[r][c] = int(self.data[r][c])
+                # 如果存在大整数，宽度以最大整数为准
                 w_x = len(str(self.data[r][c]))
-                if isinstance(self.data[r][c], int) and w_x > wid:
-                    wid = w_x
-                elif w_x > 5 and wid <= 5:
-                    add_wid = 4
-                    wid = 5
-                elif w_x > wid:
-                    add_wid = 4
-                    wid = w_x
+                if isinstance(self.data[r][c], int):
+                    wid = max(w_x, wid)
+                # 若最大整数宽度不超过5，且存在浮点数，则宽度以7为准
+                elif w_x > 7:
+                    wid = 7
+                    break
+                else:
+                    wid = min(wid, 7, w_x)
+        wid += 1
         display = "["
         for r in range(self.dim[0]):
             if r > 0:
                 display += ' '
-            display += '[' + ' '.join("{:>{width}}".format(round(x, 5), width=wid + add_wid) for x in self.data[r]) + ']'
+            display += '[' + ' '.join("{:>{width}}".format(round(x, 5), width=wid) for x in self.data[r]) + ']'
             if r < self.dim[0] - 1:
                 display += "\n"
         display += "]"
