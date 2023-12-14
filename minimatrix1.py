@@ -215,30 +215,13 @@ class Matrix:
         else:          
             ans = 1            
             ans_mat = self.copy()
-            for i in range(self.dim[0] - 1):
-                if not ans_mat[i, i]:
-                    flag = False
-                    for k in range(i+1,self.dim[0]):
-                        if ans_mat[k,i]:
-                            #交换两行
-                            memory = ans_mat[i,:]
-                            ans_mat[i,:] = ans_mat[k,:]
-                            ans_mat[k,:] = memory
-                            flag = True
-                            ans *= -1
-                            break
-                    if not flag:
-                        return 0
-                for j in range(i + 1, self.dim[0]):    
-                    factor = ans_mat[j, i] / ans_mat[i, i]
-                    f_mat = Matrix(dim = ans_mat[i, i:].dim, init_value = factor)
-                    ans_mat[j, i:] -= f_mat * ans_mat[i, i:]
-
+            # 调用gauss消元方法
+            ans_mat, seq = ans_mat.Gauss_elimination()
             for i in range(self.dim[0]):
                 ans *= ans_mat.data[i][i]
             if int(ans) == ans:
                 return int(ans)
-            return ans
+            return ans * (-1)**seq
 
     def inverse(self):
         dime = self.dim[0]
@@ -275,17 +258,39 @@ class Matrix:
         inv_mat = joint_mat[:,dime :]
         return inv_mat
         
+    def Gauss_elimination(self):
+        seq = 0
+        op_mat = self.copy()
+        for i in range(min(self.dim)): # 取行数和列数的最小值
+            flag = True
+            pivot = i
+            while flag and not op_mat.data[i][pivot]:  # 寻找当前pivot列的非零元
+                for i1 in range(i+1, self.dim[0]):
+                    if op_mat.data[i1][pivot]:
+                        op_mat[i, :], op_mat[i1, :] = op_mat[i1, :], op_mat[i, :] #交换两行
+                        flag = False
+                        seq += 1
+                        break
+                if flag: # 当前pivot列再i行以下只有零元，考察下一个pivot列
+                    pivot += 1
+                if pivot >= op_mat.dim[1]:
+                    return op_mat, seq
+            else:
+                for j in range(i + 1, self.dim[0]):
+                    factor = op_mat[j, pivot] / op_mat[i, pivot]
+                    f_mat = Matrix(dim = op_mat[i, :].dim, init_value = factor)
+                    op_mat[j, :] -= f_mat * op_mat[i, :]
+            
+        return op_mat, seq
+        
+        
+        
+        
     def rank(self):
-        ans_mat = self.copy()
-        for i in range(self.dim[0] - 1):
-            for j in range(i + 1, self.dim[0]):
-                if ans_mat[i, i]:
-                    factor = ans_mat[j, i] / ans_mat[i, i]
-                    f_mat = Matrix(dim = ans_mat[i, i:].dim, init_value = factor)
-                    ans_mat[j, i:] -= f_mat * ans_mat[i, i:]
+        ans_mat = self.Gauss_elimination()[0]
         r = 0
         for i in range(self.dim[0]):
-            if ans_mat.data[i][self.dim[1] - 1]:
+            if any(x for x in ans_mat.data[i]):
                 r += 1
         return r
 
@@ -372,103 +377,10 @@ def vectorize(func):
             return func(mat)
     return v_func
 
+
+
 if __name__ == "__main__":
     print("test here")
     
-    # Create a random 5x5 matrix
-    m1 = Matrix([[random.randint(0, 100) for i in range(5)] for _ in range(5)])
-    print("Matrix m1:")
-    print(m1)
-    
-    # Test matrix multiplication with its inverse
-    print("\nMatrix m1 * m1.inverse():")
-    print(m1.dot(m1.inverse()))
-    
-    # Test matrix reshaping
-    m2 = m1.reshape((1, 25))
-    print("\nReshaped matrix m2:")
-    print(m2)
-    
-    # Test matrix transpose
-    m3 = m1.T()
-    print("\nTransposed matrix m3:")
-    print(m3)
-    
-    # Test matrix sum along axis
-    print("\nMatrix m1 sum along axis 0:")
-    print(m1.sum(axis=0))
-    print("\nMatrix m1 sum along axis 1:")
-    print(m1.sum(axis=1))
-    print("\nTotal sum of matrix m1:")
-    print(m1.sum())
-    
-    # Test matrix Kronecker product
-    m4 = Matrix([[1, 2], [3, 4]])
-    print("\nMatrix m1 Kronecker product with m4:")
-    print(m1.Kronecker_product(m4))
-    
-    # Test matrix power
-    m5 = m1**2
-    print("\nMatrix m1 squared:")
-    print(m5)
-    
-    # Test matrix addition and subtraction
-    m6 = m1 + m1
-    print("\nMatrix m1 + m1:")
-    print(m6)
-    
-    m7 = m1 - m1
-    print("\nMatrix m1 - m1:")
-    print(m7)
-    
-    # Test matrix multiplication element-wise
-    m8 = m1 * m1
-    print("\nMatrix m1 * m1 element-wise:")
-    print(m8)
-    
-    # Test matrix determinant
-    print("\nDeterminant of m1:")
-    print(m1.det())
-    
-    # Test matrix inverse
-    m9 = m1.inverse()
-    print("\nInverse of m1:")
-    print(m9)
-    
-    # Test matrix rank
-    print("\nRank of m1:")
+    m1 = Matrix([[1,0,0,0],[2,2,0,0],[0,0,0,0]])
     print(m1.rank())
-    
-    # Test identity matrix creation
-    identity_matrix = I(3)
-    print("\nIdentity matrix:")
-    print(identity_matrix)
-    
-    # Test creating a matrix with specified dimensions and initial value
-    m10 = narray((2, 3), init_value=5)
-    print("\nMatrix m10 with dimensions (2, 3) and initial value 5:")
-    print(m10)
-    
-    # Test creating a matrix with random values
-    m11 = nrandom((2, 2))
-    print("\nRandom matrix m11:")
-    print(m11)
-    
-    # Test vectorized function
-    @vectorize
-    def square(x):
-        return x**2
-    
-    m12 = square(m1)
-    print("\nMatrix m1 after squaring each element:")
-    print(m12)
-    
-    # Test concatenation along axis
-    m13 = concatenate((m1, m2), axis=0)
-    print("\nConcatenated matrix along axis 0:")
-    print(m13)
-    
-    m14 = concatenate([m1, m3], axis=1)
-    print("\nConcatenated matrix along axis 1:")
-    print(m14)
-
