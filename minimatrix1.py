@@ -219,6 +219,7 @@ class Matrix:
             ans_mat, seq = ans_mat.Gauss_elimination()
             for i in range(self.dim[0]):
                 ans *= ans_mat.data[i][i]
+            ans *= (-1)**seq
             if int(ans) == ans:
                 return int(ans)
             return ans * (-1)**seq
@@ -366,6 +367,5 @@ if __name__ == "__main__":
     print("test here")
     
     m1 = Matrix([[0,1,0,0],[2,2,0,0],[0,0,3,0], [0,0,0,1]])
-    print(m1)
-    print(m1.inverse())
-    print(m1.dot(m1.inverse()))
+    print(m1.det())
+    print(m1.Gauss_elimination()[0], m1.Gauss_elimination()[1])
