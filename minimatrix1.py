@@ -224,34 +224,18 @@ class Matrix:
             return ans * (-1)**seq
 
     def inverse(self):
+        if self.dim[0] != self.dim[1]:
+            print("该矩阵不是方阵，没有逆矩阵。")
+            return Matrix([[0]])
         dime = self.dim[0]
         joint_mat = Matrix(dim=(dime , dime* 2))
         joint_mat[:, :dime] = self
         joint_mat[:, dime: ] = I(dime)
         # 高斯消元法
-        for i in range(self.dim[0] - 1):
-            if not joint_mat[i, i]:
-                flag = False
-                for k in range(i+1,self.dim[0]):
-                    if joint_mat[k,i]:
-                        #交换两行
-                        memory = joint_mat[i,:]
-                        joint_mat[i,:] = joint_mat[k,:]
-                        joint_mat[k,:] = memory
-                        flag = True
-                        break
-                if not flag:
-                    print("该矩阵为奇异阵，没有逆矩阵")
-                    return Matrix([[0]])
-            for j in range(i + 1, dime):
-                factor = joint_mat[j, i] / joint_mat[i, i]
-                f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
-                joint_mat[j, i:] -= f_mat * joint_mat[i, i:]
+        joint_mat = joint_mat.Gauss_elimination()[0]
+        if not any(x for x in joint_mat.data[dime - 1][:dime]):
+            print("该矩阵为奇异阵，没有逆矩阵。")
         for i in range(dime - 1, -1, -1):
-            for j in range(i):
-                factor = joint_mat[j, i] / joint_mat[i, i]
-                f_mat = Matrix(dim = joint_mat[i, i:].dim, init_value=factor)
-                joint_mat[j, i:] -= f_mat * joint_mat[i, i:]
             unify_factor = 1 / joint_mat[i, i]
             u_mat = Matrix(dim=joint_mat[i, :].dim, init_value=unify_factor)
             joint_mat[i, :] *= u_mat
@@ -276,14 +260,13 @@ class Matrix:
                 if pivot >= op_mat.dim[1]:
                     return op_mat, seq
             else:
-                for j in range(i + 1, self.dim[0]):
-                    factor = op_mat[j, pivot] / op_mat[i, pivot]
-                    f_mat = Matrix(dim = op_mat[i, :].dim, init_value = factor)
-                    op_mat[j, :] -= f_mat * op_mat[i, :]
+                for j in range(self.dim[0]):
+                    if j != i:
+                        factor = op_mat[j, pivot] / op_mat[i, pivot]
+                        f_mat = Matrix(dim = op_mat[i, :].dim, init_value = factor)
+                        op_mat[j, :] -= f_mat * op_mat[i, :]
             
         return op_mat, seq
-        
-        
         
         
     def rank(self):
@@ -382,5 +365,7 @@ def vectorize(func):
 if __name__ == "__main__":
     print("test here")
     
-    m1 = Matrix([[1,0,0,0],[2,2,0,0],[0,0,0,0]])
-    print(m1.rank())
+    m1 = Matrix([[0,1,0,0],[2,2,0,0],[0,0,3,0], [0,0,0,1]])
+    print(m1)
+    print(m1.inverse())
+    print(m1.dot(m1.inverse()))
