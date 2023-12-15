@@ -1,7 +1,7 @@
 # Test code for IEEE course final project
 # Fan Cheng, 2024
 
-import minimatrix1 as mm
+import minimatrix as mm
 
 #Test your code here!
 # The following code is only for your reference
