@@ -34,7 +34,7 @@ class Matrix:
 
     def dot(self, other):
         if self.dim[1] != other.dim[0]:
-            print("These 2 matrices has no point product.")
+            print("维数错误，无法相乘。")
             return Matrix([[0]])
         lst_mat = [[0 for c in range(other.dim[1])] for r in range(self.dim[0])]
         for r in range(self.dim[0]):
@@ -103,7 +103,7 @@ class Matrix:
             ans_mat = Matrix(ans_lst)
             return ans_mat
         else:
-            print("Error")
+            print("错误。")
             return 0
 
     def __setitem__(self, key, value):
@@ -134,7 +134,7 @@ class Matrix:
     
     def __pow__(self, n):
         if self.dim[0] != self.dim[1]:
-            print("Not a square matrix!")
+            print("矩阵不是方阵。")
             return Matrix([[0]])
         else:
             ans = I(self.dim[0])
@@ -236,6 +236,7 @@ class Matrix:
         joint_mat = joint_mat.Gauss_elimination()[0]
         if not any(x for x in joint_mat.data[dime - 1][:dime]):
             print("该矩阵为奇异阵，没有逆矩阵。")
+            return Matrix([[0]])
         for i in range(dime - 1, -1, -1):
             unify_factor = 1 / joint_mat[i, i]
             u_mat = Matrix(dim=joint_mat[i, :].dim, init_value=unify_factor)
@@ -278,6 +279,21 @@ class Matrix:
                 r += 1
         return r
 
+    def equation(self,other):
+        #检验数据是否正确
+        if other.dim[1] != 1 or other.dim[0] != self.dim[0]:
+            print("数据错误。")
+            return [[0]]
+        #生成增广矩阵
+        b = Matrix([self.data[i]+other.data[i] for i in range(self.dim[0])])
+        if self.rank() < b.rank():
+            print("无解。")
+            return [[0]]
+        if self.rank() < self.dim[1]:
+            print("有无穷多组解。")
+            return [[0]]
+        else:
+            return self.inverse().dot(other)
 
 def I(n):
     ans_lst = [[0] * n for _ in range(n)]
@@ -364,8 +380,5 @@ def vectorize(func):
 
 
 if __name__ == "__main__":
-    print("test here")
-    
-    m1 = Matrix([[0,1,0,0],[2,2,0,0],[0,0,3,0], [0,0,0,1]])
-    print(m1.det())
-    print(m1.Gauss_elimination()[0], m1.Gauss_elimination()[1])
+    print("test here")   
+    # All test code are presented in main.py
