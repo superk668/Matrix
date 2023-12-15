@@ -36,11 +36,8 @@ class Matrix:
         if self.dim[1] != other.dim[0]:
             print("维数错误，无法相乘。")
             return Matrix([[0]])
-        lst_mat = [[0 for c in range(other.dim[1])] for r in range(self.dim[0])]
-        for r in range(self.dim[0]):
-            for c in range(other.dim[1]):
-                for i in range(self.dim[1]):
-                    lst_mat[r][c] += self[r, i] * other[i, c]
+        lst_mat = [[sum(self[r, i] * other [i, c] for i in range(self.dim[1])) 
+                    for c in range(other.dim[1])] for r in range(self.dim[0])]
         ans_mat = Matrix(lst_mat)
         return ans_mat
     
@@ -138,8 +135,14 @@ class Matrix:
             return Matrix([[0]])
         else:
             ans = I(self.dim[0])
-            for _ in range(n):
-                ans = ans.dot(self)
+            n_ = n
+            b = self
+            while n_:
+                if n_ & 1:
+                    ans = ans.dot(b)
+                b = b.dot(b)
+                n_ >>= 1
+            
         return ans
     
     def __add__(self, other):
@@ -147,36 +150,27 @@ class Matrix:
             print("矩阵维数不同，无法相加！")
             return Matrix(dim=(1,1))
         else:
-            ans_lst = [[0] * self.dim[1] for _ in range(self.dim[0])]
-            for r in range(self.dim[0]):
-                for c in range(self.dim[1]):
-                    ans_lst[r][c] = self.data[r][c] + other.data[r][c]
-            ans_mat = Matrix(ans_lst)
-            return ans_mat
+            ans_lst = [[self.data[r][c] + other.data[r][c] for c in range(self.dim[1])]
+                       for r in range(self.dim[0])]
+            return Matrix(ans_lst)
 
     def __sub__(self, other):
         if self.dim != other.dim:
             print("矩阵维数不同，无法相减！")
             return Matrix(dim=(1,1))
         else:
-            ans_lst = [[0] * self.dim[1] for _ in range(self.dim[0])]
-            for r in range(self.dim[0]):
-                for c in range(self.dim[1]):
-                    ans_lst[r][c] = self.data[r][c] - other.data[r][c]
-            ans_mat = Matrix(ans_lst)
-            return ans_mat
+            ans_lst = [[self.data[r][c] - other.data[r][c] for c in range(self.dim[1])]
+                        for r in range(self.dim[0])]
+            return Matrix(ans_lst)
 
     def __mul__(self, other):
         if self.dim != other.dim:
             print("矩阵维数不同，无法相乘！")
             return Matrix(dim=(1,1))
         else:
-            ans_lst = [[0] * self.dim[1] for _ in range(self.dim[0])]
-            for r in range(self.dim[0]):
-                for c in range(self.dim[1]):
-                    ans_lst[r][c] = self.data[r][c] * other.data[r][c]
-            ans_mat = Matrix(ans_lst)
-            return ans_mat
+            ans_lst = [[self.data[r][c] * other.data[r][c] for c in range(self.dim[1])]
+                        for r in range(self.dim[0])]
+            return Matrix(ans_lst)
     
     def __len__(self):
         return self.dim[0] * self.dim[1]
@@ -382,3 +376,5 @@ def vectorize(func):
 if __name__ == "__main__":
     print("test here")   
     # All test code are presented in main.py
+    m1 = Matrix([[0,2,3],[2,3,0],[3,0,4]])
+    print(m1*m1)
