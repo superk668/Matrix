@@ -7,46 +7,46 @@ import minimatrix as mm
 # The following code is only for your reference
 # Please write the test code yourself
 
-#Test __str__
+print("Test __str__")
 test = mm.Matrix([[1],[2],[3]])
 print(test)
 
-#Test shape
+print("\nTest shape")
 test = mm.Matrix([[1,2,3]])
 print(test.shape())
 
-#Test reshape
+print("\nTest reshape")
 test = mm.Matrix([[1,2,3]])
 print(test.reshape((3,1)))
 print(test.reshape((2,5)))
 
-#Test dot
+print("\nTest dot")
 testa = mm.Matrix([[1],[2],[3]])
 testb = mm.Matrix([[4,5,6]])
 print(testa.dot(testb))
 
-#Test T
+print("\nTest T")
 test = mm.Matrix([[1,2,3],[4,5,6]])
 print(test.T())
 
-#Test sum
+print("\nTest sum")
 test = mm.Matrix([[1,2,3],[4,5,6]])
 print(test.sum(axis=1))
 print(test.sum(axis=0))
 print(test.sum(axis=None))
 
-#Test Kronecker product
+print("\nTest Kronecker product")
 testa = mm.Matrix([[1],[2],[3]])
 testb = mm.Matrix([[4,5,6]])
 print(testa.Kronecker_product(testb))
 
-#Test __getitem__
+print("\nTest __getitem__")
 test = mm.Matrix([[1,2,3],[4,5,6],[7,8,9]])
 print(test[2,1])
 print(test[1,1:3])
 print(test[0:2,2])
 
-#Test __setitem__
+print("\nTest __setitem__")
 test = mm.Matrix([[1,2,3],[4,5,6],[7,8,9]])
 test[2,1] = 0
 print(test)
@@ -57,13 +57,12 @@ print(test)
 test[1:3,1:3] = mm.Matrix([[30,30],[30,30]])
 print(test)
 
-
-#Test __pow__
+print("\nTest __pow__")
 test = mm.Matrix([[1,2,3],[4,5,6],[7,8,9]])
 print(test**3)
 print((test.dot(test)).dot(test))
 
-#Test __add__ , __sub__ , __mul__ , __len__
+print("\nTest __add__ , __sub__ , __mul__ , __len__")
 testa = mm.Matrix([[1,2,3],[4,5,6],[7,8,9]])
 testb = mm.Matrix([[9,8,7],[6,5,4],[3,2,1]])
 print(testa + testb)
@@ -71,7 +70,7 @@ print(testa - testb)
 print(testa * testb)
 print(len(testa))
 
-#Test det
+print("\nTest det")
 testa = mm.Matrix([[1,2,9],[7,5,15],[4,8,2]])
 print(testa.det())
 testb = mm.Matrix([[0]])
@@ -79,25 +78,25 @@ print(testb.det())
 testc = mm.Matrix([[0],[0],[0]])
 print(testc.det())
 
-#Test inverse
+print("\nTest inverse")
 testa = mm.Matrix([[9,1,3],[5,1,2],[7,6,3]])
 print(testa.inverse())
 testb = mm.Matrix([[0,0,0],[0,0,0],[0,0,0]])
 print(testb.inverse())
 
-#Test rank
+print("\nTest rank")
 testa = mm.Matrix([[9,1,3],[5,1,2],[7,6,3]])
 print(testa.rank())
 testb = mm.Matrix([[0,0,0],[0,0,0],[0,0,0]])
 print(testb.rank())
 
-#Test equation
+print("\nTest equation")
 testa = mm.Matrix([[18,-12,0],[-12,28,-12],[0,-12,18]])
 print(testa.inverse())
 testb = mm.Matrix([[10],[0],[0]])
 print(testa.equation(testb))
 
-#Test I(n)
+print("\nTest a series of initializing functions")
 print(mm.I(3))
 print(mm.narray((3,5),init_value=2))
 print(mm.arange(2,8,2))
@@ -108,8 +107,18 @@ print(mm.ones_like(testa))
 print(mm.nrandom((3,4)))
 print(mm.nrandom_like(testa))
 
+print("\nTest concatenate")
+mat1 = mm.Matrix([[1, 2], [3, 4]])
+mat2 = mm.Matrix([[5, 6], [7, 8]])
+print(mm.concatenate([mat1,mat2], axis=0))
+print(mm.concatenate([mat1,mat2], axis=1))
 
-#最小二乘
+print("\nTest vectorize")
+mat = mm.Matrix([[1, 2], [3, 4]])
+v_func = mm.vectorize(lambda x: x * 2)
+result = v_func(mat)
+
+print("\n最小二乘")
 m = 1000
 n = 100
 X = mm.nrandom((m, n))
@@ -121,7 +130,6 @@ e -= mm.narray((m, 1), mean)
 Y = X.dot(w) + e
 w_ = X.T().dot(X).inverse().dot(X.T()).dot(Y)
 
-print()
 print(w.sum())
 print(w_.sum())
 
