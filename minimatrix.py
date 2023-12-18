@@ -32,13 +32,12 @@ class Matrix:
             return 
 
     def dot(self, other):
-        
         # 注意到在不符合运算规则时，输出为None，在复合运算中可能导致程序报错
         # 因此在需要的函数开头，先检查所有矩阵参数是否为空
         # 下同
-        if other == None:
+        if not isinstance(other,Matrix):
             return
-        
+    
         if self.dim[1] != other.dim[0]:
             print("维数错误，无法相乘。")
             return 
@@ -67,7 +66,7 @@ class Matrix:
         return Matrix(lst)
 
     def Kronecker_product(self, other):
-        if other == None:
+        if not isinstance(other,Matrix):
             return
         ans_mat = Matrix(dim=(self.dim[0] * other.dim[0], self.dim[1] * other.dim[1]))
         for r in range(self.dim[0]):
@@ -154,7 +153,7 @@ class Matrix:
         return ans
     
     def __add__(self, other):
-        if other == None:
+        if not isinstance(other,Matrix):
             return
         if self.dim != other.dim:
             print("矩阵维数不同，无法相加！")
@@ -165,7 +164,7 @@ class Matrix:
             return Matrix(ans_lst)
 
     def __sub__(self, other):
-        if other == None:
+        if not isinstance(other,Matrix):
             return
         if self.dim != other.dim:
             print("矩阵维数不同，无法相减！")
@@ -176,7 +175,7 @@ class Matrix:
             return Matrix(ans_lst)
 
     def __mul__(self, other):
-        if other == None:
+        if not isinstance(other,Matrix):
             return
         if self.dim != other.dim:
             print("矩阵维数不同，无法相乘！")
@@ -288,6 +287,9 @@ class Matrix:
         return r
 
     def equation(self,other):
+        if not isinstance(other,Matrix):
+            return
+
         #检验数据是否正确
         if other.dim[1] != 1 or other.dim[0] != self.dim[0]:
             print("数据错误。")
