@@ -115,8 +115,10 @@ print(mm.concatenate([mat1,mat2], axis=1))
 
 print("\nTest vectorize")
 mat = mm.Matrix([[1, 2], [3, 4]])
+print(mat)
 v_func = mm.vectorize(lambda x: x * 2)
 result = v_func(mat)
+print(result)
 
 print("\n最小二乘")
 m = 1000
@@ -138,7 +140,7 @@ def square(x):
     return x ** 2
 
 mse = square(w - w_).sum()[0, 0] / n
-print(mse)
+print(f"mse = {mse}")
 
 
 
